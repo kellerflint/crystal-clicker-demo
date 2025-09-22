@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystal Clicker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>🔮 Crystal Clicker</h1>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-label">Energy:</span>
+                    <span id="energy" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Per Click:</span>
+                    <span id="perClick" class="stat-value">1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Per Second:</span>
+                    <span id="perSecond" class="stat-value">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="click-area">
+                <button id="crystal" class="crystal-button">
+                    <span class="crystal-icon">💎</span>
+                    <span class="click-text">Click the Crystal!</span>
+                </button>
+                <div id="clickEffect" class="click-effect"></div>
+            </div>
+
+            <div class="upgrades-container">
+                <h2>⚡ Upgrades</h2>
+                <div class="upgrades-grid">
+                    
+                    <div class="upgrade-card" id="powerBoost">
+                        <div class="upgrade-icon">⚙️</div>
+                        <div class="upgrade-info">
+                            <h3>Power Boost</h3>
+                            <p>+1 energy per click</p>
+                            <div class="upgrade-cost">Cost: <span class="cost">10</span></div>
+                            <div class="upgrade-owned">Owned: <span class="owned">0</span></div>
+                        </div>
+                        <button class="buy-btn">Buy</button>
+                    </div>
+
+                    <div class="upgrade-card" id="autoMiner">
+                        <div class="upgrade-icon">⛏️</div>
+                        <div class="upgrade-info">
+                            <h3>Auto Miner</h3>
+                            <p>+1 energy per second</p>
+                            <div class="upgrade-cost">Cost: <span class="cost">50</span></div>
+                            <div class="upgrade-owned">Owned: <span class="owned">0</span></div>
+                        </div>
+                        <button class="buy-btn">Buy</button>
+                    </div>
+
+                    <div class="upgrade-card" id="crystalMultiplier">
+                        <div class="upgrade-icon">⭐</div>
+                        <div class="upgrade-info">
+                            <h3>Crystal Multiplier</h3>
+                            <p>x2 all energy gains</p>
+                            <div class="upgrade-cost">Cost: <span class="cost">200</span></div>
+                            <div class="upgrade-owned">Owned: <span class="owned">0</span></div>
+                        </div>
+                        <button class="buy-btn">Buy</button>
+                    </div>
+
+                    <div class="upgrade-card" id="luckyCharm">
+                        <div class="upgrade-icon">🍀</div>
+                        <div class="upgrade-info">
+                            <h3>Lucky Charm</h3>
+                            <p>10% chance for bonus click</p>
+                            <div class="upgrade-cost">Cost: <span class="cost">500</span></div>
+                            <div class="upgrade-owned">Owned: <span class="owned">0</span></div>
+                        </div>
+                        <button class="buy-btn">Buy</button>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="controls">
+                <button id="saveGame" class="control-btn">💾 Save</button>
+                <button id="resetGame" class="control-btn">🔄 Reset</button>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
