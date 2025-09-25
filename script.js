@@ -72,33 +72,66 @@ class CrystalClicker {
 
     handleClick(event) {
         let energyGained = this.clickPower * this.totalMultiplier;
+        let luckLevel = 0;
         
-        // Lucky charm effect
+        // Lucky charm effect with stacking multipliers
         if (this.upgrades.luckyCharm.owned > 0) {
-            const luckChance = this.upgrades.luckyCharm.owned * this.upgrades.luckyCharm.effect;
-            if (Math.random() < luckChance) {
-                energyGained *= 5; // Lucky click gives 5x energy
-                this.showClickEffect(event, energyGained, true);
-            } else {
-                this.showClickEffect(event, energyGained, false);
+            const totalLuckChance = this.upgrades.luckyCharm.owned * this.upgrades.luckyCharm.effect;
+            
+            // Calculate how many guaranteed 5x multipliers we have (every 100% = 1 guaranteed level)
+            const guaranteedLevels = Math.floor(totalLuckChance);
+            
+            // Calculate remaining chance for the next level
+            const remainingChance = totalLuckChance - guaranteedLevels;
+            
+            // Apply guaranteed levels
+            luckLevel = guaranteedLevels;
+            
+            // Check if we get the next level based on remaining chance
+            if (remainingChance > 0 && Math.random() < remainingChance) {
+                luckLevel++;
             }
-        } else {
-            this.showClickEffect(event, energyGained, false);
+            
+            // Apply the luck multiplier (5^luckLevel)
+            if (luckLevel > 0) {
+                energyGained *= Math.pow(5, luckLevel);
+            }
         }
 
+        this.showClickEffect(event, energyGained, luckLevel);
         this.energy += energyGained;
         this.updateDisplay();
         this.saveGame();
     }
 
-    showClickEffect(event, energyGained, isLucky) {
+    showClickEffect(event, energyGained, luckLevel) {
         const effect = this.elements.clickEffect;
         const rect = this.elements.crystal.getBoundingClientRect();
         
         effect.style.left = (event.clientX - rect.left) + 'px';
         effect.style.top = (event.clientY - rect.top) + 'px';
-        effect.textContent = isLucky ? `+${Math.floor(energyGained)} ✨` : `+${Math.floor(energyGained)}`;
-        effect.style.color = isLucky ? '#ffd700' : '#4ecdc4';
+        
+        // Different effects based on luck level
+        if (luckLevel === 0) {
+            effect.textContent = `+${Math.floor(energyGained)}`;
+            effect.style.color = '#4ecdc4';
+        } else if (luckLevel === 1) {
+            effect.textContent = `+${Math.floor(energyGained)} ✨`;
+            effect.style.color = '#ffd700';
+        } else if (luckLevel === 2) {
+            effect.textContent = `+${Math.floor(energyGained)} ⭐`;
+            effect.style.color = '#ff6b6b';
+        } else if (luckLevel === 3) {
+            effect.textContent = `+${Math.floor(energyGained)} 🔥`;
+            effect.style.color = '#ff4757';
+        } else if (luckLevel === 4) {
+            effect.textContent = `+${Math.floor(energyGained)} 💎`;
+            effect.style.color = '#9c88ff';
+        } else if (luckLevel >= 5) {
+            effect.textContent = `+${Math.floor(energyGained)} 🌟`;
+            effect.style.color = '#ff3838';
+            effect.style.textShadow = '0 0 10px #ff3838';
+        }
         
         // Reset animation
         effect.style.animation = 'none';
@@ -108,6 +141,11 @@ class CrystalClicker {
 
     buyUpgrade(upgradeType) {
         const upgrade = this.upgrades[upgradeType];
+        
+        // Check if luckyCharm is at max level (600% = 60 upgrades = level 6 guaranteed multiplier)
+        if (upgradeType === 'luckyCharm' && upgrade.owned >= 60) {
+            return; // Cannot buy more lucky charms beyond max useful level
+        }
         
         if (this.energy >= upgrade.cost) {
             this.energy -= upgrade.cost;
@@ -151,11 +189,20 @@ class CrystalClicker {
             const upgrade = this.upgrades[upgradeType];
             const upgradeCard = document.getElementById(upgradeType);
             
-            upgradeCard.querySelector('.cost').textContent = upgrade.cost.toLocaleString();
-            upgradeCard.querySelector('.owned').textContent = upgrade.owned.toLocaleString();
-            
             const buyBtn = upgradeCard.querySelector('.buy-btn');
-            buyBtn.disabled = this.energy < upgrade.cost;
+            
+            // Check if luckyCharm is at max level
+            if (upgradeType === 'luckyCharm' && upgrade.owned >= 60) {
+                upgradeCard.querySelector('.cost').textContent = 'MAX LEVEL';
+                upgradeCard.querySelector('.owned').textContent = upgrade.owned.toLocaleString();
+                buyBtn.disabled = true;
+                buyBtn.textContent = 'MAXED';
+            } else {
+                upgradeCard.querySelector('.cost').textContent = upgrade.cost.toLocaleString();
+                upgradeCard.querySelector('.owned').textContent = upgrade.owned.toLocaleString();
+                buyBtn.disabled = this.energy < upgrade.cost;
+                buyBtn.textContent = 'Buy';
+            }
         });
     }
 
